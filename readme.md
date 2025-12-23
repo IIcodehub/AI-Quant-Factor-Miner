@@ -1,241 +1,236 @@
-# AI-Quant-Factor-Miner: 基于大模型的自动化因子挖掘框架
+[简体中文](./readme(CH).md) | English
 
-   
+# AI-Quant-Factor-Miner: LLM-Based Automated Factor Mining Framework
 
-## 📖 项目简介
+## 📖 Project Introduction
 
-**AI-Quant-Factor-Miner** 是一个模块化、高度可配置的量化金融研究框架。它利用先进的大语言模型（LLM），如 **DeepSeek (R1)** 和 **Google Gemini (Pro/Flash)**，实现了从“因子创意构思”到“生产级代码生成”再到“因子数据计算”的全自动化流水线。
+**AI-Quant-Factor-Miner** is a modular, highly configurable quantitative finance research framework. It leverages advanced Large Language Models (LLMs), such as **DeepSeek (R1)** and **Google Gemini (Pro/Flash)**, to implement a fully automated pipeline from "Factor Idea Conception" to "Production-Grade Code Generation" and finally "Factor Data Calculation".
 
-本框架旨在解决量化研究中的痛点：
+This framework aims to solve key pain points in quantitative research:
 
-1.  **创意枯竭**：通过 AI 的头脑风暴，基于一个种子思路裂变出多个差异化变体。
-2.  **代码低效**：通过精心设计的 Prompt Engineering，强制 AI 生成内存优化、无前瞻偏差的高性能 Pandas 代码。
-3.  **管理混乱**：实现代码与数据的自动分离存储，支持多模型对比测试。
-
------
-
-## 🚀 核心特性
-
-  * **多模型支持 (Multi-LLM Strategy)**:
-      * 支持无缝切换 **DeepSeek** (擅长深度推理/数学逻辑) 和 **Gemini** (擅长长窗口/快速生成)。
-      * 采用策略模式设计，扩展新模型仅需增加一个子类。
-  * **工程化代码生成**:
-      * 强制执行 **大驼峰命名法 (CamelCase)**。
-      * 内置内存优化规范：禁止大表 Merge，禁止 `rolling.corr` (强制使用 `cov/std` 分解公式)。
-      * 自动处理 `np.inf` 异常值和 SecuCode 格式化。
-  * **沙箱执行环境**:
-      * 动态加载生成的 Python 代码，无需重启主程序。
-      * 严格的数据校验机制，确保输出 DataFrame 格式统一。
-  * **结构化输出**:
-      * 根据使用的模型自动分流输出路径 (e.g., `output/deepseek/factors` vs `output/gemini/factors`)。
-      * 代码文件 (`.py`) 与 数据文件 (`.parquet`) 物理分离。
+1.  **Idea Exhaustion**: Using AI brainstorming to fissure multiple differentiated variants based on a single seed idea.
+2.  **Inefficient Code**: Enforcing AI to generate memory-optimized, look-ahead bias-free, high-performance Pandas code through carefully designed Prompt Engineering.
+3.  **Chaotic Management**: Implementing automated separation of code and data storage, supporting multi-model comparison testing.
 
 -----
 
-## 📂 项目目录结构
+## 🚀 Core Features
 
-```text
+* **Multi-LLM Strategy**:
+    * Seamless switching between **DeepSeek** (excels in deep reasoning/math logic) and **Gemini** (excels in long context/fast generation).
+    * Designed using the Strategy Pattern; extending a new model only requires adding a subclass.
+* **Engineering-Grade Code Generation**:
+    * Enforces **CamelCase** naming conventions.
+    * Built-in memory optimization standards: Prohibits large table Merges, prohibits `rolling.corr` (enforces use of `cov/std` decomposition formulas).
+    * Automatically handles `np.inf` outliers and SecuCode formatting.
+* **Sandbox Execution Environment**:
+    * Dynamically loads generated Python code without restarting the main program.
+    * Strict data validation mechanisms ensure uniform output DataFrame formats.
+* **Structured Output**:
+    * Automatically routes output paths based on the model used (e.g., `output/deepseek/factors` vs `output/gemini/factors`).
+    * Physical separation of code files (`.py`) and data files (`.parquet`).
+
+-----
+
+## 📂 Project Directory Structure
+
+~~~text
 QuantFactorAI/
-├── config/                  # [配置中心]
+├── config/                  # [Configuration Center]
 │   ├── __init__.py
-│   └── settings.py          # 全局配置：Key, 路径, 任务清单 (Single Source of Truth)
+│   └── settings.py          # Global Config: Keys, Paths, Task List (Single Source of Truth)
 │
-├── core/                    # [核心逻辑]
+├── core/                    # [Core Logic]
 │   ├── __init__.py
-│   ├── prompts.py           # 精心调优的 System Prompts (含数据字典注入)
-│   ├── llm_base.py          # LLM 抽象基类
-│   ├── llm_deepseek.py      # DeepSeek 接口实现
-│   └── llm_gemini.py        # Gemini 接口实现
+│   ├── prompts.py           # Carefully tuned System Prompts (includes Data Dictionary injection)
+│   ├── llm_base.py          # LLM Abstract Base Class
+│   ├── llm_deepseek.py      # DeepSeek Interface Implementation
+│   ├── llm_gemini.py        # Gemini Interface Implementation
 │
-├── data_loader/             # [数据层]
+├── data_loader/             # [Data Layer]
 │   ├── __init__.py
-│   └── loader.py            # 高效读取 Parquet 数据，构建 Data Bundle
+│   └── loader.py            # Efficiently reads Parquet data, constructs Data Bundle
 │
-├── engine/                  # [执行引擎]
+├── engine/                  # [Execution Engine]
 │   ├── __init__.py
-│   ├── code_manager.py      # 代码清洗、持久化与动态模块加载
-│   └── executor.py          # 因子函数执行、结果校验、格式修正 (SecuCode截断)
+│   ├── code_manager.py      # Code cleaning, persistence, and dynamic module loading
+│   └── executor.py          # Factor function execution, result validation, format correction (SecuCode truncation)
 │
-├── utils/                   # [工具箱]
+├── utils/                   # [Toolbox]
 │   ├── __init__.py
-│   └── logger.py            # 统一日志管理
+│   └── logger.py            # Unified logging management
 │
-├── main.py                  # [入口] 任务调度主程序
-├── requirements.txt         # 项目依赖
-└── README.md                # 项目文档
-```
+├── main.py                  # [Entry] Main program for task scheduling
+├── requirements.txt         # Project dependencies
+└── README.md                # Project documentation
+~~~
 
 -----
 
-## 🛠️ 快速开始
+## 🛠️ Quick Start
 
-### 1\. 环境准备
+### 1. Environment Preparation
 
-确保安装 Python 3.9 或更高版本。
+Ensure Python 3.9 or higher is installed.
 
-```bash
-# 建议创建虚拟环境
+~~~bash
+# Recommend creating a virtual environment
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
 
-# 安装依赖
+# Install dependencies
 pip install -r requirements.txt
-```
+~~~
 
-`requirements.txt` 参考内容：
+`requirements.txt` reference content:
 
-```text
+~~~text
 pandas
 numpy
 openai
 google-generativeai
 pyarrow
 fastparquet
-```
+~~~
 
-### 2\. 数据准备
+### 2. Data Preparation
 
-本项目需要两份基础数据（Parquet 格式）：
+This project requires two sets of base data (Parquet format):
 
-1.  **股票日行情 (df\_raw)**: 长格式 Panel Data。
-2.  **指数日行情 (df\_index)**: 时间序列 Data。
+1.  **Stock Daily Market Data (df_raw)**: Long format Panel Data.
+2.  **Index Daily Market Data (df_index)**: Time-series Data.
 
-请在 `config/settings.py` 中配置您的本地路径。
+Please configure your local paths in `config/settings.py`.
 
-### 3\. 配置 API Key 与任务
+### 3. Configure API Key and Tasks
 
-打开 `config/settings.py`，完成以下三步：
+Open `config/settings.py` and complete the following three steps:
 
-1.  **设置 API Key** (推荐使用环境变量，也可直接填入)：
-    ```python
+1.  **Set API Key** (Recommend using environment variables, or fill in directly):
+    ~~~python
     DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "your-sk-key")
-    ```
-2.  **选择模型**:
-    ```python
-    ACTIVE_PROVIDER = 'deepseek'  # 或 'gemini'
-    ```
-3.  **定义挖掘任务**:
-    ```python
+    ~~~
+2.  **Select Model**:
+    ~~~python
+    ACTIVE_PROVIDER = 'deepseek'  # or 'gemini'
+    ~~~
+3.  **Define Mining Tasks**:
+    ~~~python
     FACTOR_MINING_TASKS = [
         {
-            "idea": "量价背离：股价创新高但换手率下降",
+            "idea": "Price-Volume Divergence: Price hits new high but turnover rate decreases",
             "num_variations": 3
         }
     ]
-    ```
+    ~~~
 
-### 4\. 运行程序
+### 4. Run Program
 
-```bash
+~~~bash
 python main.py
-```
+~~~
 
 -----
 
-## ⚙️ 详细配置指南 (`settings.py`)
+## ⚙️ Detailed Configuration Guide (`settings.py`)
 
-`config/settings.py` 是本框架的**唯一事实来源 (Single Source of Truth)**。
+`config/settings.py` is the framework's **Single Source of Truth**.
 
-### 1\. 路径管理
+### 1. Path Management
 
-框架会自动根据 `ACTIVE_PROVIDER` 生成输出目录，无需手动创建文件夹：
+The framework automatically generates output directories based on `ACTIVE_PROVIDER`, no manual folder creation required:
 
-  * 如果使用 DeepSeek: `BASE_OUTPUT_DIR/deepseek/codes/`
-  * 如果使用 Gemini: `BASE_OUTPUT_DIR/gemini/codes/`
+* If using DeepSeek: `BASE_OUTPUT_DIR/deepseek/codes/`
+* If using Gemini: `BASE_OUTPUT_DIR/gemini/codes/`
 
-### 2\. 数据字典定义
+### 2. Data Dictionary Definition
 
-为了防止 AI 幻觉（编造不存在的列），我们在 Settings 中硬编码了数据列描述，并通过 Prompt 动态注入给 AI：
+To prevent AI hallucinations (fabricating non-existent columns), we hardcode data column descriptions in Settings and dynamically inject them into the AI via Prompts:
 
-```python
+~~~python
 STOCK_COLUMNS_DESC = """
 'TradingDay', 'SecuCode', 'OpenPrice', 'ClosePrice', 'TurnOverRate', ...
 """
-```
+~~~
 
-**注意**: 如果您的底层 Parquet 数据增加了新字段（如 `VWAP`），请务必同步更新这里的描述。
+**Note**: If your underlying Parquet data adds new fields (e.g., `VWAP`), strictly update the description here synchronously.
 
-### 3\. 任务清单 (Task List)
+### 3. Task List
 
-您可以在 `FACTOR_MINING_TASKS` 列表中批量定义任务。
+You can batch define tasks in the `FACTOR_MINING_TASKS` list.
 
-  * `idea`: 基础因子的自然语言描述。
-  * `num_variations`: 希望 AI 基于该思路生成多少个变体（默认为 3）。
-
------
-
-## 🧠 设计架构详解
-
-### 阶段一：构思 (Ideation)
-
-  * **输入**: 自然语言描述的种子思路 (e.g., "动量反转")。
-  * **处理**: LLM (DeepSeek-Reasoner / Gemini-Flash) 进行金融逻辑推理。
-  * **Prompt 约束**:
-      * 强制 **JSON** 格式输出。
-      * 强制 **大驼峰命名 (CamelCase)**。
-      * 要求数学逻辑差异化，而非简单的参数修改。
-
-### 阶段二：代码生成 (Code Generation)
-
-  * **输入**: 因子名称与具体计算逻辑。
-  * **处理**: LLM (DeepSeek-Chat / Gemini-Flash) 编写 Python 函数。
-  * **性能约束**:
-      * **内存安全**: 严禁 `pd.merge` 大表，必须先在小表计算后合并。
-      * **计算优化**: 严禁 `rolling.corr`，强制分解为 `cov / (std*std)`。
-      * **数据对齐**: 强制 `groupby` 后操作，强制 `reset_index`。
-
-### 阶段三：执行与清洗 (Execution)
-
-  * **动态加载**: 使用 `importlib` 将生成的字符串代码加载为内存函数。
-  * **后处理**:
-      * `SecuCode` 强制截断为 6 位字符串（修复 `.SZ/.SH` 后缀或 Int 类型问题）。
-      * 校验 DataFrame 是否包含 `SecuCode`, `TradingDay` 和 `FactorValue`。
+* `idea`: Natural language description of the base factor.
+* `num_variations`: How many variations you want the AI to generate based on this idea (default is 3).
 
 -----
 
-## 📊 输出示例
+## 🧠 Design Architecture Details
 
-运行完成后，`output/deepseek/` 目录下将生成：
+### Phase 1: Ideation
 
-**1. 代码文件 (`codes/`)**
+* **Input**: Seed idea in natural language description (e.g., "Momentum Reversal").
+* **Processing**: LLM (DeepSeek-Reasoner / Gemini-Flash) performs financial logic reasoning.
+* **Prompt Constraints**:
+    * Enforces **JSON** format output.
+    * Enforces **CamelCase** naming.
+    * Requires mathematical logic differentiation, not simple parameter modification.
 
-```python
+### Phase 2: Code Generation
+
+* **Input**: Factor name and specific calculation logic.
+* **Processing**: LLM (DeepSeek-Chat / Gemini-Flash) writes Python functions.
+* **Performance Constraints**:
+    * **Memory Safety**: Strictly prohibits `pd.merge` on large tables; must calculate on small tables before merging.
+    * **Calculation Optimization**: Strictly prohibits `rolling.corr`; enforces decomposition into `cov / (std*std)`.
+    * **Data Alignment**: Enforces operations after `groupby`, enforces `reset_index`.
+
+### Phase 3: Execution and Cleaning
+
+* **Dynamic Loading**: Uses `importlib` to load generated string code as in-memory functions.
+* **Post-processing**:
+    * `SecuCode` strictly truncated to 6-digit strings (fixes `.SZ/.SH` suffixes or Int type issues).
+    * Validates whether the DataFrame contains `SecuCode`, `TradingDay`, and `FactorValue`.
+
+-----
+
+## 📊 Output Example
+
+After execution, the `output/deepseek/` directory will generate:
+
+**1. Code Files (`codes/`)**
+
+~~~python
 # codes/VolAdjustedReversal.py
 import pandas as pd
 import numpy as np
 
 def VolAdjustedReversal(df_raw, df_index):
-    # 数学公式: Reversal = -1 * (Ret_20 / Std_20)
-    # 逻辑: 经波动率调整后的20日反转因子
+    # Math Formula: Reversal = -1 * (Ret_20 / Std_20)
+    # Logic: 20-day reversal factor adjusted by volatility
     
-    # ... (AI 生成的优化代码) ...
+    # ... (AI generated optimized code) ...
     return df_final[['SecuCode', 'TradingDay', 'VolAdjustedReversal']]
-```
+~~~
 
-**2. 因子数据 (`factors/`)**
-`VolAdjustedReversal.parquet` (标准 DataFrame 格式，可直接入库回测)。
-
------
-
-## ❓ 常见问题 (Troubleshooting)
-
-**Q: 报错 `ImportError: attempted relative import...`**
-A: 请务必在项目根目录下运行 `python main.py`，不要直接运行子文件夹里的脚本。
-
-**Q: AI 生成的代码报错 `KeyError`**
-A: 检查 `settings.py` 中的 `STOCK_COLUMNS_DESC` 是否与您本地 Parquet 文件的实际列名完全一致。
-
-**Q: 提示 `Authentication Fails`**
-A: 请在 `config/settings.py` 中填入正确的 API Key。
+**2. Factor Data (`factors/`)**
+`VolAdjustedReversal.parquet` (Standard DataFrame format, ready for backtesting database).
 
 -----
 
-## 📝 TODO / 未来计划
+## ❓ Troubleshooting
 
-  * [ ] **多因子合成**: 增加层级，将生成的多个因子进行 IC 加权合成。
-  * [ ] **自动回测**: 集成简单的 Alphalens 或 Backtrader 进行初步绩效评估。
-  * [ ] **因子库管理**: 使用 SQLite/MySQL 记录因子元数据和表现。
+**Q: Error `ImportError: attempted relative import...`**
+A: Please ensure you run `python main.py` in the project root directory, do not run scripts directly inside subfolders.
 
+**Q: AI generated code raises `KeyError`**
+A: Check if `STOCK_COLUMNS_DESC` in `settings.py` is exactly consistent with the actual column names in your local Parquet files.
+
+**Q: Prompt `Authentication Fails`**
+A: Please enter the correct API Key in `config/settings.py`.
+
+-----
+## 🧬 Algorithm Flow
+![Algorithm Preview](./llmfactorgenerator.png)
 -----
 
 **Disclaimer**: Quantitative investment involves risks. This framework is for research purposes only.

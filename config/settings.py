@@ -7,8 +7,8 @@ import os
 # 切换当前使用的提供商: 'deepseek' 或 'gemini'
 ACTIVE_PROVIDER = 'deepseek'
 
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "your-api")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "your-api")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "sk-f1c9c286840c42729f3cca5a4952bbd4")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBdG1ZjV_03j190NO3kNJcyQeo80EH99YM")
 
 MODEL_CONFIG = {
     "deepseek": {
@@ -19,8 +19,8 @@ MODEL_CONFIG = {
         "temperature_coding": 0.0,
     },
     "gemini": {
-        "ideation_model": "gemini-2.0-flash",
-        "coding_model": "gemini-2.0-flash",
+        "ideation_model": "gemini-3-pro-preview",
+        "coding_model": "gemini-2.5-flash",
         "temperature_ideation": 0.7,
         "temperature_coding": 0.0,
     }
@@ -31,8 +31,8 @@ MODEL_CONFIG = {
 # ===========================
 # 基础根目录
 BASE_OUTPUT_DIR = r"D:\框架\QuantFactorAI\output"
-DATA_PATH_STOCK = r"D:\框架\因子生成\data.parquet"
-DATA_PATH_INDEX = r"D:\框架\因子生成\index.parquet"
+DATA_PATH_STOCK = r"D:\框架\QuantFactorAI\data\data.parquet"
+DATA_PATH_INDEX = r"D:\框架\QuantFactorAI\data\index.parquet"
 
 STOCK_COLUMNS_DESC = """
 'TradingDay', 'SecuCode', 'PrevClosePrice', 'OpenPrice', 'HighPrice', 'LowPrice',
