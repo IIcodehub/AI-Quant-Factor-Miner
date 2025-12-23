@@ -1,4 +1,4 @@
-[简体中文](./readme(CH).md) | English
+[简体中文](./README(CH).md) | English
 
 # AI-Quant-Factor-Miner: LLM-Based Automated Factor Mining Framework
 
