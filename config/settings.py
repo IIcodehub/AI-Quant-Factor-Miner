@@ -7,8 +7,8 @@ import os
 # 切换当前使用的提供商: 'deepseek' 或 'gemini'
 ACTIVE_PROVIDER = 'deepseek'
 
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "sk-f1c9c286840c42729f3cca5a4952bbd4")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBdG1ZjV_03j190NO3kNJcyQeo80EH99YM")
+DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY", "")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 MODEL_CONFIG = {
     "deepseek": {
